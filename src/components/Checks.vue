@@ -114,7 +114,7 @@
         </div>
       </div>
     </div>
-    <ResultsPreview v-if="checklists.length > 0" :processedData="flaggedChecklists" />
+    <Review v-if="checklists.length > 0" :processedData="flaggedChecklists" />
   </div>
 </template>
 
