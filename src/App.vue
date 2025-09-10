@@ -53,6 +53,7 @@
               Richard Littauer
             </a>
           </span>
+          <span class="text-muted small mb-2 mb-md-0">v{{ version }}</span>
           <a
             href="https://github.com/Zoziologie/ChecklistReview"
             target="_blank"
@@ -90,7 +91,7 @@ export default {
     function handleImportChecklists(data) {
       importedChecklists.value = data;
     }
-    return { importedChecklists, handleImportChecklists };
+    return { importedChecklists, handleImportChecklists, version: __APP_VERSION__ };
   },
 };
 </script>

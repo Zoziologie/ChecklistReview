@@ -1,6 +1,6 @@
 {
   "name": "checklist-review",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A web application for eBird reviewers to process, filter, and check eBird checklists for data quality.",
   "author": "Raphaël Nussbaumer",
   "license": "GPL-3.0-or-later",
