@@ -163,7 +163,6 @@ import { ref, reactive, computed } from "vue";
 import Papa from "papaparse";
 
 export default {
-  name: "Import",
   emits: ["import-checklists"],
   setup(props, { emit }) {
     const checklists = ref([]);

@@ -114,7 +114,6 @@ const mail_template_outro =
 and eBird science https://ebird.org/science.\n\n`;
 
 export default {
-  name: "ResultsPreview",
   components: { Multiselect },
   props: {
     processedData: {

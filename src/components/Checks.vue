@@ -121,12 +121,11 @@
 <script>
 import { ref, reactive, computed, watch } from "vue";
 import { checksConfig as defaultChecksConfig } from "../utils/checksConfig.js";
-import ResultsPreview from "./ResultsPreview.vue";
+import Review from "./Review.vue";
 
 export default {
-  name: "Checks",
   components: {
-    ResultsPreview,
+    Review,
   },
   props: {
     importedChecklists: {

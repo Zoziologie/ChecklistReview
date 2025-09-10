@@ -62,12 +62,6 @@
   </div>
 </template>
 
-<style>
-.one-time-process-card {
-  background: linear-gradient(90deg, #e3f2fd 0%, #f1f8e9 100%);
-  border: 1.5px solid #90caf9;
-}
-</style>
 <script>
 import { ref } from "vue";
 import Papa from "papaparse";
@@ -109,7 +103,6 @@ const ESSENTIAL_COLUMNS = [
 ];
 
 export default {
-  name: "EBD",
   setup() {
     const fileInput = ref(null);
     const uploadedFile = ref(null);
