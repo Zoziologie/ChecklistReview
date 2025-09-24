@@ -177,7 +177,7 @@ export const checksConfig = [
 
   {
     id: "complete_media",
-    label: "Mdia for every species",
+    label: "Media for every species",
     description:
       "Identifies complete checklists where every single species has associated media, which is unusually comprehensive and may indicate incomplete species reporting.",
     selected: true,

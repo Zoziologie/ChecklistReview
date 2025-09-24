@@ -1,67 +1,66 @@
 <template>
-  <div v-if="processedData && processedData.length > 0">
-    <div class="card mb-4">
-      <div class="card-body">
-        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
-          <h4 class="card-title mb-0 flex-shrink-1" style="min-width: 180px">
-            4. Review flagged checklists
-          </h4>
-          <div class="d-flex align-items-center gap-2 flex-shrink-0" style="width: 280px">
-            <label class="form-label mb-0 small" style="font-size: 0.85rem; white-space: nowrap"
-              >Columns:</label
-            >
-            <multiselect
-              v-model="selectedColumns"
-              :options="tableCols"
-              :multiple="true"
-              :close-on-select="false"
-              :clear-on-select="false"
-              :preserve-search="true"
-              placeholder="Pick some"
-              label="label"
-              track-by="key"
-              :preselect-first="true"
-              class="mb-0 small-columns-selector"
-              style="font-size: 0.85rem"
-            >
-              <template #selection="{ values, isOpen }">
-                <span
-                  class="multiselect__single"
-                  v-if="values.length"
-                  v-show="!isOpen"
-                  style="font-size: 0.85rem"
-                >
-                  {{ values.length }} / {{ tableCols.length }} columns selected
-                </span>
-              </template>
-            </multiselect>
-          </div>
+  <div class="card mb-4" v-if="processedData && processedData.length > 0">
+    <div class="card-body">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+        <h4 class="card-title mb-0 flex-shrink-1" style="min-width: 180px">
+          4. Review flagged checklists
+        </h4>
+        <div class="d-flex align-items-center gap-2 flex-shrink-0" style="width: 280px">
+          <label class="form-label mb-0 small" style="font-size: 0.85rem; white-space: nowrap"
+            >Columns:</label
+          >
+          <multiselect
+            v-model="selectedColumns"
+            :options="tableCols"
+            :multiple="true"
+            :close-on-select="false"
+            :clear-on-select="false"
+            :preserve-search="true"
+            placeholder="Pick some"
+            label="label"
+            track-by="key"
+            :preselect-first="true"
+            class="mb-0 small-columns-selector"
+            style="font-size: 0.85rem"
+          >
+            <template #selection="{ values, isOpen }">
+              <span
+                class="multiselect__single"
+                v-if="values.length"
+                v-show="!isOpen"
+                style="font-size: 0.85rem"
+              >
+                {{ values.length }} / {{ tableCols.length }} columns selected
+              </span>
+            </template>
+          </multiselect>
         </div>
-        <div class="table-responsive" style="max-height: 400px; overflow: auto">
-          <table class="table table-striped table-sm results-table-sticky">
-            <thead>
-              <tr>
-                <!--<th style="cursor: pointer" @click="sortBy('fixed')">
+      </div>
+      <div class="table-responsive" style="max-height: 400px; overflow: auto">
+        <table class="table table-striped table-sm results-table-sticky">
+          <thead>
+            <tr>
+              <!--<th style="cursor: pointer" @click="sortBy('fixed')">
                   Fixed
                   <span v-if="sortKey === 'fixed'">{{ sortAsc ? "▲" : "▼" }}</span>
                 </th>-->
-                <th
-                  v-for="col in visibleCols"
-                  :key="col.key"
-                  @click="col.sortable ? sortBy(col.key) : null"
-                  style="cursor: pointer"
-                >
-                  {{ col.label }}
-                  <span v-if="col.sortable">
-                    <template v-if="sortKey === col.key">{{ sortAsc ? "▲" : "▼" }}</template>
-                    <template v-else>↕</template>
-                  </span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row, index) in displayedData" :key="index">
-                <!--<td>
+              <th
+                v-for="col in visibleCols"
+                :key="col.key"
+                @click="col.sortable ? sortBy(col.key) : null"
+                style="cursor: pointer"
+              >
+                {{ col.label }}
+                <span v-if="col.sortable">
+                  <template v-if="sortKey === col.key">{{ sortAsc ? "▲" : "▼" }}</template>
+                  <template v-else>↕</template>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, index) in displayedData" :key="index">
+              <!--<td>
                   <input
                     type="checkbox"
                     :checked="row.fixed"
@@ -73,17 +72,16 @@
                     "
                   />
                 </td>-->
-                <td v-for="col in visibleCols" :key="col.key">
-                  <span
-                    v-html="col.displayFun ? col.displayFun(row, index, $emit) : row[col.key]"
-                  ></span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="mb-2 text-muted small">Flagged checklists: {{ processedData.length }}</div>
+              <td v-for="col in visibleCols" :key="col.key">
+                <span
+                  v-html="col.displayFun ? col.displayFun(row, index, $emit) : row[col.key]"
+                ></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+      <div class="mb-2 text-muted small">Flagged checklists: {{ processedData.length }}</div>
     </div>
   </div>
   <div v-else class="alert alert-info mt-4" role="alert">
@@ -123,9 +121,6 @@ export default {
   },
   //emits: ["update-fixed"],
   setup(props, { emit }) {
-    const displayCount = ref(50);
-    const maxDisplay = 200; // Maximum to show in browser for performance
-
     const sortKey = ref("");
     const sortAsc = ref(true);
 
@@ -313,7 +308,7 @@ export default {
           return sortAsc.value ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
         });
       }
-      return data.slice(0, Math.min(displayCount.value, maxDisplay));
+      return data;
     });
 
     // Expose a global function for copying mail template
@@ -331,8 +326,6 @@ export default {
       };
     }
     return {
-      displayCount,
-      maxDisplay,
       displayedData,
       sortKey,
       sortAsc,

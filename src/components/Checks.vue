@@ -1,121 +1,108 @@
 <template>
-  <div>
-    <!-- Spinner overlay during initial processing -->
-    <div
-      v-if="spinner && checklists.length == 0"
-      class="d-flex flex-column align-items-center justify-content-center py-5"
-    >
-      <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem" role="status">
-        <span class="visually-hidden">Processing...</span>
-      </div>
+  <!-- Spinner overlay during initial processing -->
+  <div
+    v-if="spinner && checklists.length == 0"
+    class="d-flex flex-column align-items-center justify-content-center py-5"
+  >
+    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem" role="status">
+      <span class="visually-hidden">Processing...</span>
     </div>
-    <!-- Checks and Thresholds -->
-    <div class="row" v-if="checklists !== null && checklists.length > 0">
-      <div class="col-12">
-        <!-- Checks and Thresholds -->
+  </div>
+  <div class="card mb-4" v-if="checklists !== null && checklists.length > 0">
+    <div class="card-body">
+      <h4 class="card-title">3. Configure quality checks</h4>
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="d-flex">
+          <button
+            class="btn btn-sm btn-outline-primary me-2"
+            type="button"
+            @click="selectAllChecks"
+          >
+            Select All
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" type="button" @click="deselectAllChecks">
+            Select None
+          </button>
+        </div>
+        <div class="d-flex gap-2">
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            type="button"
+            @click="exportChecksConfig"
+          >
+            Export
+          </button>
+          <label class="btn btn-sm btn-outline-secondary" type="button">
+            Import
+            <input
+              type="file"
+              accept="application/json"
+              @change="importChecksConfig"
+              style="display: none"
+            />
+          </label>
+        </div>
+      </div>
 
-        <div class="card mb-4">
-          <div class="card-body">
-            <h4 class="card-title">3. Configure quality checks</h4>
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <div class="d-flex">
-                <button
-                  class="btn btn-sm btn-outline-primary me-2"
-                  type="button"
-                  @click="selectAllChecks"
-                >
-                  Select All
-                </button>
-                <button
-                  class="btn btn-sm btn-outline-secondary"
-                  type="button"
-                  @click="deselectAllChecks"
-                >
-                  Select None
-                </button>
-              </div>
-              <div class="d-flex gap-2">
-                <button
-                  class="btn btn-sm btn-outline-secondary"
-                  type="button"
-                  @click="exportChecksConfig"
-                >
-                  Export
-                </button>
-                <label class="btn btn-sm btn-outline-secondary" type="button">
-                  Import
-                  <input
-                    type="file"
-                    accept="application/json"
-                    @change="importChecksConfig"
-                    style="display: none"
-                  />
-                </label>
-              </div>
+      <!-- Check Selection -->
+      <div class="mb-4">
+        <div class="row">
+          <div class="col-lg-4 col-md-6" v-for="check in checks" :key="check.id">
+            <div class="form-check mb-2">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                :id="check.id"
+                v-model="check.selected"
+              />
+              <label class="form-check-label" :for="check.id">
+                {{ check.label }}
+              </label>
             </div>
 
-            <!-- Check Selection -->
-            <div class="mb-4">
-              <div class="row">
-                <div class="col-lg-4 col-md-6" v-for="check in checks" :key="check.id">
-                  <div class="form-check mb-2">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      :id="check.id"
-                      v-model="check.selected"
-                    />
-                    <label class="form-check-label" :for="check.id">
-                      {{ check.label }}
-                    </label>
-                  </div>
-
-                  <!-- Description and Threshold Configuration -->
-                  <div
-                    v-if="check.selected"
-                    class="ms-4 mt-1 mb-3 ps-3 border-start border-3 border-secondary"
+            <!-- Description and Threshold Configuration -->
+            <div
+              v-if="check.selected"
+              class="ms-4 mt-1 mb-3 ps-3 border-start border-3 border-secondary"
+            >
+              <div class="mb-2">
+                <small class="text-muted">{{ check.description }}</small>
+              </div>
+              <div
+                v-if="check.thresholds.length > 0"
+                class="d-flex flex-wrap gap-2 align-items-center"
+              >
+                <span
+                  v-for="threshold in check.thresholds"
+                  :key="threshold.key"
+                  class="d-flex align-items-center gap-1"
+                >
+                  <label
+                    :for="threshold.key"
+                    class="form-label mb-0 small text-muted"
+                    style="font-size: 0.75rem"
                   >
-                    <div class="mb-2">
-                      <small class="text-muted">{{ check.description }}</small>
-                    </div>
-                    <div
-                      v-if="check.thresholds.length > 0"
-                      class="d-flex flex-wrap gap-2 align-items-center"
-                    >
-                      <span
-                        v-for="threshold in check.thresholds"
-                        :key="threshold.key"
-                        class="d-flex align-items-center gap-1"
-                      >
-                        <label
-                          :for="threshold.key"
-                          class="form-label mb-0 small text-muted"
-                          style="font-size: 0.75rem"
-                        >
-                          {{ threshold.label }}:
-                        </label>
-                        <input
-                          :type="threshold.type"
-                          :id="threshold.key"
-                          v-model.number="thresholds[threshold.key]"
-                          class="form-control form-control-sm"
-                          :min="threshold.min"
-                          :step="threshold.step"
-                          @change="runChecks(check.id)"
-                          style="width: 80px; font-size: 0.75rem"
-                        />
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                    {{ threshold.label }}:
+                  </label>
+                  <input
+                    :type="threshold.type"
+                    :id="threshold.key"
+                    v-model.number="thresholds[threshold.key]"
+                    class="form-control form-control-sm"
+                    :min="threshold.min"
+                    :step="threshold.step"
+                    @change="runChecks(check.id)"
+                    style="width: 80px; font-size: 0.75rem"
+                  />
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <Review v-if="checklists.length > 0" :processedData="flaggedChecklists" />
   </div>
+  <Review v-if="checklists.length > 0" :processedData="flaggedChecklists" />
 </template>
 
 <script>
